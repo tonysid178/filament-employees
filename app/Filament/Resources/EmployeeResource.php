@@ -18,6 +18,8 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
+use App\Filament\Resources\Country;
+
 
 class EmployeeResource extends Resource
 {
@@ -33,10 +35,10 @@ class EmployeeResource extends Resource
                     ->schema([
                         Select::make('country_id')
                             ->relationship('country', 'name')->required(),
-                        Select::make('state_id')
-                            ->relationship('state', 'name')->required(),
                         Select::make('city_id')
                             ->relationship('city', 'name')->required(),
+                        Select::make('state_id')
+                            ->relationship('state', 'name')->required(),
                         Select::make('department_id')
                             ->relationship('department', 'name')->required(),
                         TextInput::make('first_name')->required(),

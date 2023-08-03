@@ -28,7 +28,7 @@ class DepartmentResource extends Resource
             ->schema([
                 Card::make()
                 ->schema([
-                    TextInput::make('name')
+                    TextInput::make('name')->required(),
                 ])
             ]);
     }
