@@ -27,7 +27,7 @@ class EmployeeResource extends Resource
 {
     protected static ?string $model = Employee::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-briefcase';
 
     public static function form(Form $form): Form
     {
@@ -43,6 +43,7 @@ class EmployeeResource extends Resource
                                     ->whereHas('states')
                             )
                             ->reactive()
+                            ->required()
                             ->searchable()
                             ->preload()
                             ->afterStateUpdated(fn (callable $set) => $set('state_id', null)),
@@ -59,6 +60,7 @@ class EmployeeResource extends Resource
                                     )
                             )
                             ->reactive()
+                            ->required()
                             ->searchable()
                             ->preload()
                             ->afterStateUpdated(fn (callable $set) => $set('city_id', null)),
@@ -69,21 +71,30 @@ class EmployeeResource extends Resource
                                 'name',
                             )
                             ->reactive()
+                            ->required()
                             ->searchable()
                             ->preload(),
 
 
                         Select::make('department_id')
-                            ->relationship('department', 'name')->required(),
+                            ->relationship('department', 'name')
+                            ->required(),
 
-                        TextInput::make('first_name')->required(),
+                        TextInput::make('first_name')
+                            ->required()
+                            ->maxLength(255),
 
-                        TextInput::make('last_name')->required(),
+                        TextInput::make('last_name')
+                            ->required()
+                            ->maxLength(255),
 
-                        TextInput::make('address')->required(),
+                        TextInput::make('address')
+                            ->required()
+                            ->maxLength(255),
 
                         TextInput::make('zip_code')
-                            ->required(),
+                            ->required()
+                            ->maxLength(5),
 
                         DatePicker::make('birth_date')
                             ->required(),
@@ -98,15 +109,29 @@ class EmployeeResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('id')->sortable(),
-                TextColumn::make('first_name')->sortable()->searchable(),
-                TextColumn::make('last_name')->sortable()->searchable(),
-                TextColumn::make('department.name')->sortable(),
-                TextColumn::make('date_hired')->date(),
-                TextColumn::make('created_at')->dateTime(),
+                TextColumn::make('id')
+                    ->sortable(),
+
+                TextColumn::make('first_name')
+                    ->sortable()
+                    ->searchable(),
+
+                TextColumn::make('last_name')
+                    ->sortable()
+                    ->searchable(),
+
+                TextColumn::make('department.name')
+                    ->sortable(),
+
+                TextColumn::make('date_hired')
+                    ->date(),
+
+                TextColumn::make('created_at')
+                    ->dateTime(),
             ])
             ->filters([
-                SelectFilter::make('department')->relationship('department', 'name')
+                SelectFilter::make('department')
+                    ->relationship('department', 'name')
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

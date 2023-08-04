@@ -23,7 +23,9 @@ class StateResource extends Resource
 {
     protected static ?string $model = State::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-building-office';
+
+    protected static ?string $navigationGroup = 'System Management';
 
     public static function form(Form $form): Form
     {
@@ -32,8 +34,12 @@ class StateResource extends Resource
                 Card::make()
                     ->schema([
                         Select::make('country_id')
-                            ->relationship('country', 'name')->required(),
-                        TextInput::make('name')->required(),
+                            ->relationship('country', 'name')
+                            ->required()
+                            ->maxlength(255),
+
+                        TextInput::make('name')
+                            ->required(),
                     ])
             ]);
     }
@@ -42,10 +48,18 @@ class StateResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('id')->sortable(),
-                TextColumn::make('name')->sortable()->searchable(),
-                TextColumn::make('country.name')->sortable(),
-                TextColumn::make('created_at')->sortable()
+                TextColumn::make('id')
+                    ->sortable(),
+
+                TextColumn::make('name')
+                    ->sortable()
+                    ->searchable(),
+
+                TextColumn::make('country.name')
+                    ->sortable(),
+
+                TextColumn::make('created_at')
+                    ->sortable()
             ])
             ->filters([
                 //
