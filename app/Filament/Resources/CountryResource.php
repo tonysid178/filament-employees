@@ -31,9 +31,12 @@ class CountryResource extends Resource
             ->schema([
                 Card::make()
                     ->schema([
+                        // Country code
                         TextInput::make('country_code')
                             ->required()
                             ->maxLength(3),
+
+                        // Name
                         TextInput::make('name')
                             ->required()
                             ->maxLength(255),
@@ -45,10 +48,19 @@ class CountryResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('id')->sortable(),
-                TextColumn::make('country_code')->sortable()->searchable(),
-                TextColumn::make('name')->sortable()->searchable(),
-                TextColumn::make('created_at')->dateTime()
+                TextColumn::make('id')
+                    ->sortable(),
+
+                TextColumn::make('country_code')
+                    ->sortable()
+                    ->searchable(),
+
+                TextColumn::make('name')
+                    ->sortable()
+                    ->searchable(),
+
+                TextColumn::make('created_at')
+                    ->dateTime()
             ])
             ->filters([
                 //
@@ -68,9 +80,7 @@ class CountryResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
     public static function getPages(): array
