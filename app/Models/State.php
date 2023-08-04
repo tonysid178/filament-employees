@@ -11,11 +11,13 @@ class State extends Model
 
     protected $fillable = ['country_id', 'name'];
 
-    public function country() {
+    public function country()
+    {
         return $this->belongsTo(Country::class);
     }
 
-    public function employees() {
+    public function employees()
+    {
         return $this->hasMany(Employee::class);
     }
 }

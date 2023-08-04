@@ -5,6 +5,8 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\EmployeeResource\Pages;
 use App\Filament\Resources\EmployeeResource\RelationManagers;
 use App\Models\Employee;
+use App\Models\Country;
+use App\Models\State;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -18,7 +20,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
-use App\Filament\Resources\Country;
+
 
 
 class EmployeeResource extends Resource
@@ -34,19 +36,60 @@ class EmployeeResource extends Resource
                 Card::make()
                     ->schema([
                         Select::make('country_id')
-                            ->relationship('country', 'name')->required(),
-                        Select::make('city_id')
-                            ->relationship('city', 'name')->required(),
+                            ->relationship(
+                                'country',
+                                'name',
+                                fn ($query) => $query
+                                    ->whereHas('states')
+                            )
+                            ->reactive()
+                            ->searchable()
+                            ->preload()
+                            ->afterStateUpdated(fn (callable $set) => $set('state_id', null)),
+
                         Select::make('state_id')
-                            ->relationship('state', 'name')->required(),
+                            ->relationship(
+                                'state',
+                                'name',
+                                fn ($query, callable $get) => $query
+                                    ->when(
+                                        $get('country_id'),
+                                        fn ($query) => $query
+                                            ->where('country_id', $get('country_id'))
+                                    )
+                            )
+                            ->reactive()
+                            ->searchable()
+                            ->preload()
+                            ->afterStateUpdated(fn (callable $set) => $set('city_id', null)),
+
+                        Select::make('city_id')
+                            ->relationship(
+                                'city',
+                                'name',
+                            )
+                            ->reactive()
+                            ->searchable()
+                            ->preload(),
+
+
                         Select::make('department_id')
                             ->relationship('department', 'name')->required(),
+
                         TextInput::make('first_name')->required(),
+
                         TextInput::make('last_name')->required(),
+
                         TextInput::make('address')->required(),
-                        TextInput::make('zip_code')->required(),
-                        DatePicker::make('birth_date')->required(),
-                        DatePicker::make('date_hired')->required(),
+
+                        TextInput::make('zip_code')
+                            ->required(),
+
+                        DatePicker::make('birth_date')
+                            ->required(),
+
+                        DatePicker::make('date_hired')
+                            ->required(),
                     ])
             ]);
     }
